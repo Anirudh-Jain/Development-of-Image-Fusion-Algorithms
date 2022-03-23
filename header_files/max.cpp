@@ -1,4 +1,4 @@
-int **min_max(int *arr1, int *arr2, int hgt, int wdth)
+int **max(int *arr1, int *arr2, int hgt, int wdth)
 {
     int i, j, k = 0;
     int **ptr = new int *[wdth];

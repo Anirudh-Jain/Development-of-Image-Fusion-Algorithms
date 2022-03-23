@@ -37,8 +37,8 @@ int main(int argc, char **argv)
         }
     }
     ofstream avg_fused("./fused_output_images/avg_fused.pgm", ios::binary);
-    ofstream mm_fused("./fused_output_images/min_max_fused.pgm", ios::binary);
-    ofstream pca_fused("./fused_output_images/pca_fused.pgm", ios::binary);
+    ofstream max_fused("./fused_output_images/max_fused.pgm", ios::binary);
+    ofstream min_fused("./fused_output_images/min_fused.pgm", ios::binary);
 
     char buffer[1024], buffer2[1024];
     int width, height, intensity, width2, height2, intensity2;
@@ -84,11 +84,12 @@ int main(int argc, char **argv)
         }
         //avg_fused << flush;
     }
+    avg_fused.close();
 
     // By taking larger of both the intensities
-    int **result_max = min_max(*pic1, *pic2, height, width);
+    int **result_max = max(*pic1, *pic2, height, width);
 
-    mm_fused << buffer << '\n'
+    max_fused << buffer << '\n'
              << width << " " << height << '\n'
              << intensity;
 
@@ -96,19 +97,28 @@ int main(int argc, char **argv)
     {
         for (int j = 0; j < width; j++)
         {
-            mm_fused << (char)*(*(result_max + i) + j);
+            max_fused << (char)*(*(result_max + i) + j);
         }
-        //mm_fused << flush;
+        //max_fused << flush;
     }
-    /*
-    for (int i = 0; i < height2; i++)
+    max_fused.close();
+
+    // By taking smaller of both intensities
+    min_fused << buffer << '\n'
+              << width << " " << height << '\n'
+              << intensity;
+    
+    int **result_min = min(*pic1, *pic2, height, width);
+
+    for (int i = 0; i < height; i++)
     {
-        for (int j = 0; j < width2; j++)
+        for (int j = 0; j < width; j++)
         {
-            pca_fused << (char)pic2[i][j];
+            min_fused << (char)*(*(result_min + i) + j);
         }
-        //pca_fused << endl;
+        //max_fused << flush;
     }
-    */
+    min_fused.close();
+
     return 0;
 }
