@@ -1,18 +1,16 @@
-int **max(int *arr1, int *arr2, int hgt, int wdth)
+int **max(int **arr1, int **arr2, int hgt, int wdth)
 {
-    int i, j, k = 0;
-    int **ptr = new int *[wdth];
+    int **ptr = new int *[hgt];
 
     for (int i = 0; i < hgt; i++)
     {
-        ptr[i] = new int[hgt];
+        ptr[i] = new int[wdth];
         for (int j = 0; j < wdth; j++)
         {
-            if (arr1[k] < arr2[k])
-                *(*(ptr + i) + j) = arr2[k];
+            if (arr1[i][j] < arr2[i][j])
+                *(*(ptr + i) + j) = arr2[i][j];
             else
-                *(*(ptr + i) + j) = arr1[k];
-            k++;
+                *(*(ptr + i) + j) = arr1[i][j];
         }
     }
     return ptr;

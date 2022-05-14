@@ -39,6 +39,7 @@ int main(int argc, char **argv)
     ofstream avg_fused("./fused_output_images/avg_fused.pgm", ios::binary);
     ofstream max_fused("./fused_output_images/max_fused.pgm", ios::binary);
     ofstream min_fused("./fused_output_images/min_fused.pgm", ios::binary);
+    ofstream freq_fused("./fused_output_images/freq_fused.pgm", ios::binary);
 
     char buffer[1024], buffer2[1024];
     int width, height, intensity, width2, height2, intensity2;
@@ -46,7 +47,8 @@ int main(int argc, char **argv)
     infile >> buffer >> width >> height >> intensity;
     infile2 >> buffer2 >> width2 >> height2 >> intensity2;
 
-    int pic1[height][width], pic2[height][width];
+    int **pic1 = create2DArray(height, width);
+    int **pic2 = create2DArray(height2, width2);
 
     // Reading in the first input image
     for (int i = 0; i < height; i++)
@@ -68,9 +70,10 @@ int main(int argc, char **argv)
     }
     infile2.close();
 
-    // Generating Outputs
+    // Generating Outputs //
+
     // By taking Mean of both the intensities
-    int **result_avg = average(*pic1, *pic2, height, width);
+    int **result_avg = average(pic1, pic2, height, width);
 
     avg_fused << buffer << '\n'
               << width << " " << height << '\n'
@@ -79,27 +82,29 @@ int main(int argc, char **argv)
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
-        {   
+        {
+            //cout<<(char)*(*(result_avg + i) + j)<<endl;
             avg_fused << (char)*(*(result_avg + i) + j);
         }
-        //avg_fused << flush;
+        //avg_fused << endl;
     }
     avg_fused.close();
 
     // By taking larger of both the intensities
-    int **result_max = max(*pic1, *pic2, height, width);
+    int **result_max = max(pic1, pic2, height, width);
 
     max_fused << buffer << '\n'
-             << width << " " << height << '\n'
-             << intensity;
+              << width << " " << height << '\n'
+              << intensity;
 
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
         {
+            //cout<<(char)*(*(result_max + i) + j)<<endl;
             max_fused << (char)*(*(result_max + i) + j);
         }
-        //max_fused << flush;
+        //max_fused << endl;
     }
     max_fused.close();
 
@@ -107,8 +112,8 @@ int main(int argc, char **argv)
     min_fused << buffer << '\n'
               << width << " " << height << '\n'
               << intensity;
-    
-    int **result_min = min(*pic1, *pic2, height, width);
+
+    int **result_min = min(pic1, pic2, height, width);
 
     for (int i = 0; i < height; i++)
     {
@@ -116,9 +121,26 @@ int main(int argc, char **argv)
         {
             min_fused << (char)*(*(result_min + i) + j);
         }
-        //max_fused << flush;
+        //min_fused << endl;
     }
     min_fused.close();
+
+    // By taking frequency into consideration for both images
+    freq_fused << buffer << '\n'
+               << width << " " << height << '\n'
+               << intensity;
+
+    int **result_freq = freqCheck(pic1, pic2, height, width);
+
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            freq_fused << (char)*(*(result_freq + i) + j);
+        }
+        //freq_fused << endl;
+    }
+    freq_fused.close();
 
     return 0;
 }
