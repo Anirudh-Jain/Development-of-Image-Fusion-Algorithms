@@ -1,4 +1,4 @@
-int **create2DArray(unsigned height, unsigned width)
+int **create2DArray(unsigned int height, unsigned int width)
 {
     int **array2D = 0;
     array2D = new int *[height];

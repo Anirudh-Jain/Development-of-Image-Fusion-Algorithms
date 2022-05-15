@@ -6,7 +6,8 @@ int **min(int **arr1, int **arr2, int hgt, int wdth)
     {
         ptr[i] = new int[wdth];
         for (int j = 0; j < wdth; j++)
-        {
+        {   
+            // Finding Min Intensity --> Output
             if (arr1[i][j] > arr2[i][j])
                 *(*(ptr + i) + j) = arr2[i][j];
             else

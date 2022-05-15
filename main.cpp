@@ -14,7 +14,7 @@ int main(int argc, char **argv)
         return 0;
     }
 
-    // Exit program if file doesn't open
+    // Instantiating File Objects for reading
     string filename(argv[1]);
     string path = "./input_images/" + filename;
     ifstream infile(path, ios::binary);
@@ -23,6 +23,7 @@ int main(int argc, char **argv)
     string path2 = "./input_images/" + filename2;
     ifstream infile2(path2, ios::binary);
 
+    // Exit program if file doesn't open
     if (!infile.is_open() || !infile2.is_open())
     {
         if (!infile.is_open())
@@ -36,6 +37,9 @@ int main(int argc, char **argv)
             return 0;
         }
     }
+
+    // Else continue
+    // Instantiating File Objects for writing
     ofstream avg_fused("./fused_output_images/avg_fused.pgm", ios::binary);
     ofstream max_fused("./fused_output_images/max_fused.pgm", ios::binary);
     ofstream min_fused("./fused_output_images/min_fused.pgm", ios::binary);
@@ -44,9 +48,11 @@ int main(int argc, char **argv)
     char buffer[1024], buffer2[1024];
     int width, height, intensity, width2, height2, intensity2;
 
+    // Storing Headers
     infile >> buffer >> width >> height >> intensity;
     infile2 >> buffer2 >> width2 >> height2 >> intensity2;
 
+    // Initializing Arrays to store image intensities
     int **pic1 = create2DArray(height, width);
     int **pic2 = create2DArray(height2, width2);
 
@@ -70,7 +76,7 @@ int main(int argc, char **argv)
     }
     infile2.close();
 
-    // Generating Outputs //
+    /* Generating Outputs */
 
     // By taking Mean of both the intensities
     int **result_avg = average(pic1, pic2, height, width);
@@ -83,10 +89,8 @@ int main(int argc, char **argv)
     {
         for (int j = 0; j < width; j++)
         {
-            //cout<<(char)*(*(result_avg + i) + j)<<endl;
             avg_fused << (char)*(*(result_avg + i) + j);
         }
-        //avg_fused << endl;
     }
     avg_fused.close();
 
@@ -101,10 +105,8 @@ int main(int argc, char **argv)
     {
         for (int j = 0; j < width; j++)
         {
-            //cout<<(char)*(*(result_max + i) + j)<<endl;
             max_fused << (char)*(*(result_max + i) + j);
         }
-        //max_fused << endl;
     }
     max_fused.close();
 
@@ -121,11 +123,10 @@ int main(int argc, char **argv)
         {
             min_fused << (char)*(*(result_min + i) + j);
         }
-        //min_fused << endl;
     }
     min_fused.close();
 
-    // By taking frequency into consideration for both images
+    // By taking sharp area into consideration from both images
     freq_fused << buffer << '\n'
                << width << " " << height << '\n'
                << intensity;
@@ -138,7 +139,6 @@ int main(int argc, char **argv)
         {
             freq_fused << (char)*(*(result_freq + i) + j);
         }
-        //freq_fused << endl;
     }
     freq_fused.close();
 
